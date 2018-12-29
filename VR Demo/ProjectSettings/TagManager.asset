@@ -6,6 +6,7 @@ TagManager:
   tags:
   - InteractableObject
   - TeleportPlatform
+  - UI
   layers:
   - Default
   - TransparentFX

@@ -9,12 +9,17 @@ public class ObjectDetection : MonoBehaviour {
     public Camera camRight;
 
     public GameObject camParent;
+    public GameObject interactableObject;
     public GameObject objectMenu;
 
     RaycastHit hit;
 
     public Image loadFillLeft;
     public Image loadFillRight;
+
+    Material cubeMaterial;
+
+    bool incColor = true;
 	
 	void Update ()
     {
@@ -29,12 +34,44 @@ public class ObjectDetection : MonoBehaviour {
                 {
                     if(hit.collider.gameObject.tag == "InteractableObject")
                     {
-
+                        objectMenu.SetActive(true);
                     }
                     else if(hit.collider.gameObject.tag == "TeleportPlatform")
                     {
                         TeleportToPlatform(hit.collider.gameObject.name);
                     }
+                }
+            }
+            else if(hit.collider.gameObject.tag == "UI")
+            {
+                switch (hit.collider.gameObject.name)
+                {
+                    case "ScaleUp":
+                        ScaleObjectUp();
+                        break;
+                    case "ScaleDown":
+                        ScaleObjectDown();
+                        break;
+                    case "RotateX":
+                        RotateObjectX();
+                        break;
+                    case "RotateY":
+                        RotateObjectY();
+                        break;
+                    case "RotateZ":
+                        RotateObjectZ();
+                        break;
+                    case "ChangeColor":
+                        //Functions to change color continuously
+                        if (incColor)
+                        {
+                            ChangeColorUp();
+                        }
+                        else
+                        {
+                            ChangeColorDown();
+                        }
+                        break;
                 }
             }
             else
@@ -65,5 +102,95 @@ public class ObjectDetection : MonoBehaviour {
             default:
                 break;
         }
+    }
+
+    void ScaleObjectUp()
+    {
+        Vector3 scaleVal = new Vector3(0.01f, 0.01f, 0.01f);
+        if(interactableObject.transform.localScale.x <= 4f || interactableObject.transform.localScale.y <= 4f || interactableObject.transform.localScale.z <= 4f)
+        {
+            interactableObject.transform.localScale += scaleVal;
+        }
+    }
+
+    void ScaleObjectDown()
+    {
+        Vector3 scaleVal = new Vector3(0.01f, 0.01f, 0.01f);
+        if (interactableObject.transform.localScale.x >= 1f || interactableObject.transform.localScale.y >= 1f || interactableObject.transform.localScale.z >= 1f)
+        {
+            interactableObject.transform.localScale -= scaleVal;
+        }
+    }
+
+    void RotateObjectX()
+    {
+        interactableObject.transform.Rotate(0.5f, 0, 0);
+    }
+
+    void RotateObjectY()
+    {
+        interactableObject.transform.Rotate(0, 0.5f, 0);
+    }
+
+    void RotateObjectZ()
+    {
+        interactableObject.transform.Rotate(0, 0, 0.5f);
+    }
+
+    void ChangeColorUp()
+    {
+        Color currentColor = interactableObject.GetComponent<Renderer>().material.color;
+        if(currentColor.r >= 1)
+        {
+            if(currentColor.b >= 1)
+            {
+                if(currentColor.g >= 1)
+                {
+                    incColor = false;
+                    ChangeColorDown();
+                }
+                else
+                {
+                    currentColor.g += 0.01f;
+                }
+            }
+            else
+            {
+                currentColor.b += 0.01f;
+            }
+        }
+        else
+        {
+            currentColor.r += 0.01f;
+        }
+        interactableObject.GetComponent<Renderer>().material.color = currentColor;
+    }
+    void ChangeColorDown()
+    {
+        Color currentColor = interactableObject.GetComponent<Renderer>().material.color;
+        if (currentColor.r <= 0)
+        {
+            if (currentColor.b <= 0)
+            {
+                if (currentColor.g <= 0)
+                {
+                    incColor = true;
+                    ChangeColorUp();
+                }
+                else
+                {
+                    currentColor.g -= 0.01f;
+                }
+            }
+            else
+            {
+                currentColor.b -= 0.01f;
+            }
+        }
+        else
+        {
+            currentColor.r -= 0.01f;
+        }
+        interactableObject.GetComponent<Renderer>().material.color = currentColor;
     }
 }

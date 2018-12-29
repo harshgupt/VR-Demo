@@ -17,7 +17,7 @@ public class CameraMovement : MonoBehaviour {
         {
             Input.gyro.enabled = true;
         }
-        camParent.transform.rotation = Quaternion.Euler(90f, 90f, 0);
+        camParent.transform.rotation = Quaternion.Euler(0f, 0f, 180f);
         rot = new Quaternion(0, 0, 1, 0);
     }
 
